@@ -1,7 +1,7 @@
 """Unit tests for F1 classification API."""
 import os
 import pytest
-from backend.api.classification import (
+from api.classification import (
     get_base_classification,
     apply_rubinho_champion_flag,
     get_classification
