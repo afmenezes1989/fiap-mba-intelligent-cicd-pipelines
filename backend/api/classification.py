@@ -3,13 +3,14 @@
 This module provides the F1 driver classification data with support for
 the Rubinho Barrichello champion feature flag.
 """
+
 import os
-from typing import List, Dict
+from typing import Dict, List
 
 
 def get_base_classification() -> List[Dict[str, any]]:
     """Get the base F1 2025 classification without feature flags.
-    
+
     Returns:
         List of driver classification data with position, name, team, and points.
     """
@@ -29,13 +30,13 @@ def get_base_classification() -> List[Dict[str, any]]:
 
 def apply_rubinho_champion_flag(classification: List[Dict[str, any]]) -> List[Dict[str, any]]:
     """Apply the Rubinho Barrichello champion feature flag.
-    
+
     When enabled, inserts Rubinho Barrichello at position 1 and shifts
     all other drivers down by one position.
-    
+
     Args:
         classification: Original classification data.
-        
+
     Returns:
         Modified classification with Rubinho at position 1.
     """
@@ -44,34 +45,33 @@ def apply_rubinho_champion_flag(classification: List[Dict[str, any]]) -> List[Di
         "name": "Rubens Barrichello",
         "team": "Ferrari Legends",
         "points": 999,
-        "isChampion": True
+        "isChampion": True,
     }
-    
+
     # Shift all drivers down by one position
     updated_classification = [rubinho]
     for driver in classification:
         driver["position"] += 1
         updated_classification.append(driver)
-    
+
     return updated_classification
 
 
 def get_classification() -> List[Dict[str, any]]:
     """Get F1 2025 classification with feature flag support.
-    
+
     Checks the RUBINHO_CAMPEAO environment variable. If set to 'true',
     returns classification with Rubinho Barrichello as champion.
-    
+
     Returns:
         F1 driver classification data.
     """
     classification = get_base_classification()
-    
+
     # Check feature flag
     rubinho_champion = os.getenv("RUBINHO_CAMPEAO", "false").lower() == "true"
-    
+
     if rubinho_champion:
         classification = apply_rubinho_champion_flag(classification)
-    
-    return classification
 
+    return classification
