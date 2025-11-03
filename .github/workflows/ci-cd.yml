@@ -10,6 +10,12 @@ env:
   NODE_VERSION: '20.x'
   PYTHON_VERSION: '3.9'
 
+# Pipeline Stages:
+# 1. Setup - Install and cache dependencies
+# 2. Quality & Security (Parallel) - Linting, Testing, SonarCloud, and Security Scans
+# 3. Build - Build artifacts after all quality checks pass
+# 4. Deploy - Deploy to production after build and security checks complete
+
 jobs:
   # Step 1-2: Setup and Dependencies
   setup:
@@ -118,11 +124,11 @@ jobs:
           cd backend
           isort --check-only api
 
-  # Step 5: Build Frontend
+  # Step 8: Build Frontend
   build-frontend:
     name: Build Frontend Application
     runs-on: ubuntu-latest
-    needs: [setup, lint-frontend]
+    needs: [lint-frontend, test-frontend, sonarcloud]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -149,11 +155,11 @@ jobs:
           path: frontend/dist
           retention-days: 7
 
-  # Step 6: Build Backend
+  # Step 9: Build Backend
   build-backend:
     name: Build Backend Package
     runs-on: ubuntu-latest
-    needs: [setup, lint-backend]
+    needs: [lint-backend, test-backend, sonarcloud]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -172,11 +178,11 @@ jobs:
         run: |
           python -c "from backend.api.classification import get_classification; print('✓ Backend imports successful')"
 
-  # Step 7: Frontend Unit Tests
+  # Step 5: Frontend Unit Tests
   test-frontend:
     name: Frontend Unit Tests
     runs-on: ubuntu-latest
-    needs: lint-frontend
+    needs: setup
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -203,11 +209,11 @@ jobs:
           path: frontend/coverage
           retention-days: 7
 
-  # Step 8: Backend Unit Tests
+  # Step 6: Backend Unit Tests
   test-backend:
     name: Backend Unit Tests
     runs-on: ubuntu-latest
-    needs: lint-backend
+    needs: setup
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -236,10 +242,11 @@ jobs:
           path: backend/coverage.xml
           retention-days: 7
 
-  # Step 9: SAST Security Scan (CodeQL)
+  # Step 10: SAST Security Scan (CodeQL)
   security-sast:
     name: SAST Security Analysis
     runs-on: ubuntu-latest
+    needs: setup
     permissions:
       actions: read
       contents: read
@@ -256,10 +263,11 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
 
-  # Step 10: Dependency Vulnerability Scan
+  # Step 11: Dependency Vulnerability Scan
   security-dependencies:
     name: Dependency Vulnerability Scan
     runs-on: ubuntu-latest
+    needs: setup
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -285,7 +293,7 @@ jobs:
           cd backend
           safety check -r requirements.txt --continue-on-error || true
 
-  # Step 11: SonarCloud Code Quality Analysis
+  # Step 7: SonarCloud Code Quality Analysis
   sonarcloud:
     name: SonarCloud Quality Analysis
     runs-on: ubuntu-latest
@@ -323,7 +331,7 @@ jobs:
   deploy:
     name: Deploy to Vercel
     runs-on: ubuntu-latest
-    needs: [build-frontend, build-backend, test-frontend, test-backend, security-sast]
+    needs: [build-frontend, build-backend, security-sast, security-dependencies]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment:
       name: production
