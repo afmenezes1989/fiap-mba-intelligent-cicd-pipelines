@@ -16,7 +16,7 @@ export interface ClassificationResponse {
 }
 
 // API base URL - use environment variable or default to backend URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://f1-backend-tau.vercel.app';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://backend-seven-lac-84.vercel.app';
 
 /**
  * Fetches F1 2025 driver classification from the API.
