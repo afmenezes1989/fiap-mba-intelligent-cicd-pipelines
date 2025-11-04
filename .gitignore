@@ -15,9 +15,14 @@ pip-delete-this-directory.txt
 dist/
 build/
 *.egg-info/
-.vercel
-frontend/.vercel/.vercel_build_output
-backend/.vercel/.vercel_build_output
+
+# Vercel build outputs (but keep project.json)
+.vercel/*
+!.vercel/project.json
+frontend/.vercel/*
+!frontend/.vercel/project.json
+backend/.vercel/*
+!backend/.vercel/project.json
 
 # Testing
 coverage/
