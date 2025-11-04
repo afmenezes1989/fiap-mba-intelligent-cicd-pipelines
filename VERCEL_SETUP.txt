@@ -1,0 +1,149 @@
+# Vercel Two-Project Setup Guide
+
+## Project Structure
+
+You have 2 separate Vercel projects:
+1. Frontend Project (React/Vite)
+2. Backend Project (FastAPI)
+
+## Step 1: Link Both Projects
+
+### Frontend:
+cd /Users/andre.menezes/workspace/f1-classification-cicd/frontend
+vercel link
+
+When prompted:
+- Project name: f1-classification-frontend (or your chosen name)
+- Link to existing: YES (if already created)
+
+This creates: frontend/.vercel/project.json
+
+### Backend:
+cd /Users/andre.menezes/workspace/f1-classification-cicd/backend
+vercel link
+
+When prompted:
+- Project name: f1-classification-backend (or your chosen name)
+- Link to existing: YES (if already created)
+
+This creates: backend/.vercel/project.json
+
+## Step 2: Get Project IDs
+
+### Frontend Project ID:
+cat frontend/.vercel/project.json
+# Copy the "projectId" value
+
+### Backend Project ID:
+cat backend/.vercel/project.json
+# Copy the "projectId" value
+
+### Organization ID (same for both):
+cat frontend/.vercel/project.json
+# Copy the "orgId" value
+
+## Step 3: Get Vercel Token
+
+1. Go to: https://vercel.com/account/tokens
+2. Click "Create Token"
+3. Name: "GitHub Actions CI/CD"
+4. Scope: Full Account
+5. Copy the token (shown only once!)
+
+## Step 4: Add GitHub Secrets
+
+Go to: https://github.com/YOUR_USERNAME/f1-classification-cicd/settings/secrets/actions
+
+Add these 5 secrets:
+
+| Secret Name | Value | From |
+|-------------|-------|------|
+| VERCEL_TOKEN | vercel_xxxxx | Step 3 |
+| VERCEL_ORG_ID | team_xxxxx | frontend/.vercel/project.json |
+| VERCEL_FRONTEND_PROJECT_ID | prj_xxxxx | frontend/.vercel/project.json |
+| VERCEL_BACKEND_PROJECT_ID | prj_xxxxx | backend/.vercel/project.json |
+| RUBINHO_CAMPEAO | false | Optional feature flag |
+
+## Step 5: Configure Environment Variables
+
+### In Frontend Vercel Project:
+1. Go to Vercel Dashboard → Your Frontend Project
+2. Settings → Environment Variables
+3. Add:
+   - Name: VITE_API_URL
+   - Value: https://your-backend.vercel.app
+   - Environment: Production, Preview, Development
+
+### In Backend Vercel Project:
+1. Go to Vercel Dashboard → Your Backend Project
+2. Settings → Environment Variables
+3. Add:
+   - Name: RUBINHO_CAMPEAO
+   - Value: false
+   - Environment: Production, Preview, Development
+
+## Step 6: Update Frontend API URL
+
+Edit: frontend/src/services/api.ts
+
+Change the API baseURL to point to your backend:
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+## Step 7: Update Backend CORS
+
+Edit: backend/api/index.py
+
+Update the allow_origins to include your frontend URL:
+allow_origins=[
+    "http://localhost:3000",
+    "https://your-frontend.vercel.app",  # Update this!
+]
+
+## Step 8: Deploy
+
+### Method 1: Via CI/CD (Automatic)
+git add .
+git commit -m "feat: configure two-project Vercel deployment"
+git push origin main
+
+# GitHub Actions will deploy both projects
+
+### Method 2: Manual Deploy
+cd frontend && vercel --prod
+cd ../backend && vercel --prod
+
+## Step 9: Verify
+
+1. Check GitHub Actions: All steps should pass
+2. Frontend URL: Check deployment output or Vercel dashboard
+3. Backend URL: Check deployment output or Vercel dashboard
+4. Test API: Visit https://your-backend.vercel.app/api/classification
+5. Test Frontend: Visit https://your-frontend.vercel.app
+
+## URLs After Deployment
+
+Frontend: https://YOUR_FRONTEND_PROJECT.vercel.app
+Backend API: https://YOUR_BACKEND_PROJECT.vercel.app/api/classification
+
+## Troubleshooting
+
+### CORS Error:
+Update backend/api/index.py with your actual frontend URL
+
+### API Not Found:
+1. Check backend/vercel.json exists
+2. Verify api/index.py path
+3. Check backend deployment logs in Vercel
+
+### Frontend Can't Connect:
+1. Update VITE_API_URL in Vercel environment variables
+2. Rebuild frontend
+3. Check browser console for actual error
+
+## Feature Flag Control
+
+Change RUBINHO_CAMPEAO in:
+1. Backend Vercel Project → Environment Variables
+2. Or GitHub Secret (rebuilds on next push)
+
+Then redeploy or push new commit.
