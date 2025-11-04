@@ -41,6 +41,12 @@ htmlcov/
 .env.local
 .env.*.local
 
+# Sensitive documentation (secrets, credentials, IDs)
+*SECRETS*.txt
+*CREDENTIALS*.txt
+*KEYS*.txt
+.vercel/project.json
+
 # Logs
 logs/
 *.log
