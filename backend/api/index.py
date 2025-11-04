@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
-from .classification import get_classification
+from api.classification import get_classification
 
 # Initialize FastAPI app
 app = FastAPI(
