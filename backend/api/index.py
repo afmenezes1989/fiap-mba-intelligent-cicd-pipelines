@@ -18,13 +18,14 @@ app = FastAPI(
 )
 
 # Enable CORS for frontend (separate Vercel deployment)
+# Accept all Vercel deployments since URLs change with each deploy
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # Local development
-        "https://frontend-psi-liart-27.vercel.app",  # Production frontend
-        "https://*.vercel.app",  # Vercel preview deployments
+        "http://localhost:5173",  # Vite dev server
     ],
+    allow_origin_regex=r"https://.*\.vercel\.app",  # All Vercel deployments
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

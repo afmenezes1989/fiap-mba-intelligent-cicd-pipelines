@@ -15,8 +15,10 @@ export interface ClassificationResponse {
   data: Driver[];
 }
 
-// API base URL - use environment variable or default to backend URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://backend-mj13r6ied-afmenezes1989s-projects.vercel.app';
+// API base URL - use environment variable or fallback to latest deployment
+// Note: Vercel URLs change with each deployment when using team scope
+// Set VITE_API_URL in Vercel dashboard: Settings → Environment Variables
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://backend-qpftgapxe-afmenezes1989s-projects.vercel.app';
 
 /**
  * Fetches F1 2025 driver classification from the API.
