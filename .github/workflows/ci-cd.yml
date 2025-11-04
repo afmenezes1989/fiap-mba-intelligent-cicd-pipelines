@@ -322,10 +322,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=f1-classification-cicd
-            -Dsonar.organization=your-org
 
   # Step 12: Deploy to Vercel (Production)
   deploy:
