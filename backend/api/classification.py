@@ -28,9 +28,7 @@ def get_base_classification() -> List[Dict[str, Any]]:
     ]
 
 
-def apply_rubinho_champion_flag(
-    classification: List[Dict[str, Any]]
-) -> List[Dict[str, Any]]:
+def apply_rubinho_champion_flag(classification: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Apply the Rubinho Barrichello champion feature flag.
 
     When enabled, inserts Rubinho Barrichello at position 1 and shifts
