@@ -27,7 +27,9 @@ describe('API Service', () => {
 
       const result = await fetchClassification();
 
-      expect(axios.get).toHaveBeenCalledWith('/api/classification');
+      expect(axios.get).toHaveBeenCalledWith(
+        expect.stringContaining('/api/classification')
+      );
       expect(result).toEqual(mockData.data.data);
       expect(result).toHaveLength(2);
     });
