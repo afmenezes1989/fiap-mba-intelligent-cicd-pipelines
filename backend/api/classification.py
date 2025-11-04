@@ -5,10 +5,10 @@ the Rubinho Barrichello champion feature flag.
 """
 
 import os
-from typing import Dict, List
+from typing import Any, Dict, List
 
 
-def get_base_classification() -> List[Dict[str, any]]:
+def get_base_classification() -> List[Dict[str, Any]]:
     """Get the base F1 2025 classification without feature flags.
 
     Returns:
@@ -28,7 +28,9 @@ def get_base_classification() -> List[Dict[str, any]]:
     ]
 
 
-def apply_rubinho_champion_flag(classification: List[Dict[str, any]]) -> List[Dict[str, any]]:
+def apply_rubinho_champion_flag(
+    classification: List[Dict[str, Any]]
+) -> List[Dict[str, Any]]:
     """Apply the Rubinho Barrichello champion feature flag.
 
     When enabled, inserts Rubinho Barrichello at position 1 and shifts
@@ -57,7 +59,7 @@ def apply_rubinho_champion_flag(classification: List[Dict[str, any]]) -> List[Di
     return updated_classification
 
 
-def get_classification() -> List[Dict[str, any]]:
+def get_classification() -> List[Dict[str, Any]]:
     """Get F1 2025 classification with feature flag support.
 
     Checks the RUBINHO_CAMPEAO environment variable. If set to 'true',
