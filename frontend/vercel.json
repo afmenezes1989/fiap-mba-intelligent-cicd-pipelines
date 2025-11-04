@@ -5,7 +5,7 @@
   "devCommand": "npm run dev",
   "framework": null,
   "env": {
-    "VITE_API_URL": "https://backend-seven-lac-84.vercel.app"
+    "VITE_API_URL": "https://backend-mj13r6ied-afmenezes1989s-projects.vercel.app"
   }
 }
 
