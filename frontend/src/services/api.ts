@@ -15,6 +15,9 @@ export interface ClassificationResponse {
   data: Driver[];
 }
 
+// API base URL - use environment variable or default to backend URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://f1-backend-tau.vercel.app';
+
 /**
  * Fetches F1 2025 driver classification from the API.
  * 
@@ -23,7 +26,9 @@ export interface ClassificationResponse {
  */
 export async function fetchClassification(): Promise<Driver[]> {
   try {
-    const response = await axios.get<ClassificationResponse>('/api/classification');
+    const response = await axios.get<ClassificationResponse>(
+      `${API_BASE_URL}/api/classification`
+    );
     return response.data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

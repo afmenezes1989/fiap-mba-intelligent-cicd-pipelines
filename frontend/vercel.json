@@ -4,11 +4,8 @@
   "installCommand": "npm ci",
   "devCommand": "npm run dev",
   "framework": null,
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://YOUR_BACKEND_URL.vercel.app/api/:path*"
-    }
-  ]
+  "env": {
+    "VITE_API_URL": "https://f1-backend-tau.vercel.app"
+  }
 }
 
