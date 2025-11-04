@@ -16,8 +16,8 @@ dist/
 build/
 *.egg-info/
 .vercel
-frontend/.vercel
-backend/.vercel
+frontend/.vercel/.vercel_build_output
+backend/.vercel/.vercel_build_output
 
 # Testing
 coverage/
@@ -45,7 +45,6 @@ htmlcov/
 *SECRETS*.txt
 *CREDENTIALS*.txt
 *KEYS*.txt
-.vercel/project.json
 
 # Logs
 logs/
