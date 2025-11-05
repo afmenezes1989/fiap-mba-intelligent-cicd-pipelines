@@ -32,14 +32,14 @@
 
 ## About
 
-This project showcases an **intelligent CI/CD pipeline** with **14+ automated steps** for a full-stack application displaying Formula 1 2025 driver championship standings. Built as part of an MBA assignment on modern DevOps practices.
+This project showcases an **intelligent CI/CD pipeline** with **9+ automated steps** for a frontend application displaying Formula 1 2025 driver championship standings. Built as part of an MBA assignment on modern DevOps practices.
 
 ### Key Highlights
 
- **14+ Pipeline Steps** - Exceeding assignment requirements  
+ **9+ Pipeline Steps** - Exceeding assignment requirements  
  **Feature Flag Implementation** - Runtime configuration demo  
- **Comprehensive Testing** - Unit tests with 80%+ coverage  
- **Security First** - SAST, DAST, and dependency scanning  
+ **Comprehensive Testing** - Unit tests with high coverage  
+ **Security First** - SAST and dependency scanning  
  **Quality Gates** - SonarCloud integration  
  **Zero-Downtime Deploy** - Automated Vercel deployment  
 
@@ -49,19 +49,19 @@ This project showcases an **intelligent CI/CD pipeline** with **14+ automated st
 
 ### Application Features
 
-- **Real-time F1 2025 Classification** - Beautiful, responsive standings table
+- **F1 2025 Classification** - Beautiful, responsive standings table with country flags
+- **Official F1 Design** - Matching official F1 website styling
 - **Modern UI/UX** - F1-themed design with Tailwind CSS
-- **Feature Flag System** - `RUBINHO_CAMPEAO` toggle
+- **Feature Flag System** - `VITE_RUBINHO_CAMPEAO` toggle
 - **Responsive Design** - Works on all devices
-- **Fast Performance** - Vite-powered frontend
-- **Secure API** - FastAPI with CORS protection
+- **Fast Performance** - Vite-powered frontend with local data
 
 ### DevOps Features
 
 - **Automated Deployment** - Push to main = instant production
-- **Automated Testing** - Frontend (Vitest) + Backend (pytest)
-- **Code Quality** - ESLint, Flake8, Black, Prettier
-- **Security Scanning** - CodeQL + Dependency audits
+- **Automated Testing** - Frontend unit tests with Vitest
+- **Code Quality** - ESLint for TypeScript/JavaScript
+- **Security Scanning** - CodeQL + npm audit
 - **Code Analysis** - SonarCloud integration
 - **Coverage Reports** - Visual coverage tracking
 - **Parallel Execution** - Optimized pipeline runtime
@@ -79,14 +79,16 @@ This project showcases an **intelligent CI/CD pipeline** with **14+ automated st
          │
 ┌────────▼────────────────────────┐
 │      Vercel Edge Network        │
-├─────────────────┬───────────────┤
-│   Frontend      │   Backend     │
-│ (React/Vite)  │ (FastAPI)   │
-│                 │               │
-│  • UI Layer     │  • REST API   │
-│  • State Mgmt   │  • Feature    │
-│  • Components   │    Flags      │
-└─────────────────┴───────────────┘
+│                                 │
+│          Frontend               │
+│        (React/Vite)             │
+│                                 │
+│  • UI Layer                     │
+│  • State Management             │
+│  • Components                   │
+│  • Local Data                   │
+│  • Feature Flags                │
+└─────────────────────────────────┘
 ```
 
 ### Directory Structure
@@ -95,19 +97,15 @@ This project showcases an **intelligent CI/CD pipeline** with **14+ automated st
 f1-classification-cicd/
 ├── .github/
 │   └── workflows/
-│       └── ci-cd.yml              # 14-step CI/CD pipeline
+│       └── ci-cd.yml              # 9-step CI/CD pipeline
 ├── frontend/                       # React + Vite
 │   ├── src/
 │   │   ├── components/            # React components
-│   │   ├── services/              # API client
+│   │   ├── data/                  # Classification data + feature flags
+│   │   ├── services/              # Data service layer
 │   │   └── test/                  # Unit tests
+│   ├── vercel.json                # Vercel deployment config
 │   └── package.json
-├── backend/                        # Python FastAPI
-│   ├── api/
-│   │   ├── classification.py      # Business logic + feature flags
-│   │   └── index.py               # API endpoints
-│   └── tests/                     # Unit tests
-├── vercel.json                    # Deployment config
 └── README.md
 ```
 
@@ -115,7 +113,7 @@ f1-classification-cicd/
 
 ## CI/CD Pipeline
 
-Our intelligent pipeline includes **14 automated steps**:
+Our intelligent pipeline includes **9 automated steps**:
 
 ### Pipeline Stages
 
@@ -123,18 +121,13 @@ Our intelligent pipeline includes **14 automated steps**:
 graph LR
     A[Push Code] --> B[Setup & Cache]
     B --> C[Lint Frontend]
-    B --> D[Lint Backend]
-    C --> E[Build Frontend]
-    D --> F[Build Backend]
-    C --> G[Test Frontend]
-    D --> H[Test Backend]
-    E --> I[SAST Scan]
-    G --> J[Dependency Scan]
-    H --> J
-    J --> K[SonarCloud]
-    K --> L[Deploy]
-    L --> M[Update Badges]
-    M --> N[Notify]
+    C --> D[Build Frontend]
+    C --> E[Test Frontend]
+    D --> F[SAST Scan]
+    E --> G[Dependency Scan]
+    G --> H[SonarCloud]
+    H --> I[Deploy to Vercel]
+    I --> J[Notify]
 ```
 
 ### Step Breakdown
@@ -142,19 +135,14 @@ graph LR
 | # | Step | Description | Tools |
 |---|------|-------------|-------|
 | 1 | **Checkout** | Clone repository | GitHub Actions |
-| 2 | **Setup** | Configure Node.js & Python | actions/setup-node, setup-python |
-| 3 | **Cache** | Cache dependencies | actions/cache |
-| 4 | **Lint Frontend** | ESLint + TypeScript | ESLint |
-| 5 | **Lint Backend** | Flake8 + Black + isort | Python linters |
-| 6 | **Build Frontend** | Compile React app | Vite |
-| 7 | **Build Backend** | Validate Python package | pip |
-| 8 | **Test Frontend** | Unit tests + coverage | Vitest |
-| 9 | **Test Backend** | Unit tests + coverage | pytest |
-| 10 | **SAST** | Static security analysis | GitHub CodeQL |
-| 11 | **Dependency Scan** | Vulnerability detection | npm audit, Safety |
-| 12 | **Code Quality** | Quality metrics | SonarCloud |
-| 13 | **Deploy** | Production deployment | Vercel |
-| 14 | **Notify** | Success notification | GitHub Actions |
+| 2 | **Setup & Cache** | Configure Node.js + cache dependencies | actions/setup-node, actions/cache |
+| 3 | **Lint** | ESLint + TypeScript checks | ESLint |
+| 4 | **Build** | Compile React app | Vite |
+| 5 | **Test** | Unit tests + coverage | Vitest |
+| 6 | **SAST** | Static security analysis | GitHub CodeQL |
+| 7 | **Dependency Scan** | Vulnerability detection | npm audit |
+| 8 | **Code Quality** | Quality metrics | SonarCloud |
+| 9 | **Deploy** | Production deployment | Vercel |
 
 ---
 
@@ -165,21 +153,15 @@ graph LR
 - **TypeScript** - Type safety
 - **Vite** - Build tool
 - **Tailwind CSS** - Styling
-- **Axios** - HTTP client
 - **Vitest** - Testing framework
-
-### Backend
-- **FastAPI** - Modern Python web framework
-- **Mangum** - ASGI adapter for serverless
-- **Pydantic** - Data validation
-- **pytest** - Testing framework
+- **Local Data** - No backend required
 
 ### DevOps
 - **GitHub Actions** - CI/CD orchestration
 - **Vercel** - Hosting & deployment
 - **SonarCloud** - Code quality
 - **CodeQL** - Security analysis
-- **ESLint/Flake8** - Linting
+- **ESLint** - Linting
 
 ---
 
@@ -188,7 +170,6 @@ graph LR
 ### Prerequisites
 
 - Node.js 20.x or higher
-- Python 3.9 or higher
 - npm or yarn
 
 ### Production URL
@@ -205,54 +186,44 @@ graph LR
 
 2. **Install dependencies**
    ```bash
-   # Frontend
    cd frontend
    npm install
-   
-   # Backend
-   cd ../backend
-   pip install -r requirements.txt
    ```
 
-3. **Run development servers**
+3. **Run development server**
    ```bash
-   # Terminal 1 - Frontend (http://localhost:3000)
    cd frontend
    npm run dev
-   
-   # Terminal 2 - Backend (http://localhost:8000)
-   cd backend
-   uvicorn api.index:app --reload
+   # Open http://localhost:5173
    ```
 
 4. **Run tests**
    ```bash
-   # Frontend tests
    cd frontend
    npm test
-   
-   # Backend tests
-   cd backend
-   pytest
+   ```
+
+5. **Build for production**
+   ```bash
+   cd frontend
+   npm run build
    ```
 
 ### Environment Variables
 
-Create a `.env` file in the root:
+The feature flag can be set via environment variables:
 
-```env
-# Feature Flags
-RUBINHO_CAMPEAO=false
-
-# API Configuration
-API_URL=http://localhost:8000
+```bash
+# Enable Rubinho feature flag
+export VITE_RUBINHO_CAMPEAO=true
+npm run dev
 ```
 
 ---
 
 ## Feature Flag
 
-### RUBINHO_CAMPEAO
+### VITE_RUBINHO_CAMPEAO
 
 This feature flag demonstrates runtime configuration in CI/CD pipelines.
 
@@ -260,30 +231,24 @@ This feature flag demonstrates runtime configuration in CI/CD pipelines.
 - Rubens Barrichello appears at position 1
 - Special "CHAMPION" badge displayed
 - All other drivers shift down one position
-- Visual celebration effects
 
 **When Disabled (`false`):**
 - Standard 2025 classification displayed
-- Max Verstappen leads the championship
+- Lando Norris leads the championship
 
 ### Controlling the Flag
-
-**In CI/CD (GitHub Actions):**
-```yaml
-env:
-  RUBINHO_CAMPEAO: "true"
-```
 
 **In Vercel Dashboard:**
 ```
 Environment Variables → Add New
-Name: RUBINHO_CAMPEAO
+Name: VITE_RUBINHO_CAMPEAO
 Value: true
 ```
 
 **Locally:**
 ```bash
-export RUBINHO_CAMPEAO=true
+export VITE_RUBINHO_CAMPEAO=true
+npm run dev
 ```
 
 ---
@@ -291,19 +256,18 @@ export RUBINHO_CAMPEAO=true
 ## Pipeline Steps (Detailed)
 
 ### 1. Code Quality Checks
-- Frontend: ESLint with TypeScript rules
-- Backend: Flake8, Black (formatting), isort (imports)
+- ESLint with TypeScript rules
+- Strict type checking
 - Fails build on linting errors
 
 ### 2. Automated Testing
-- **Frontend**: 15+ unit tests with Vitest
-- **Backend**: 12+ unit tests with pytest
-- Coverage threshold: 80%
+- **17+ unit tests** with Vitest
+- High code coverage
 - Generates HTML coverage reports
 
 ### 3. Security Scanning
-- **SAST**: GitHub CodeQL for JS/TS and Python
-- **Dependencies**: npm audit + Safety check
+- **SAST**: GitHub CodeQL for JavaScript/TypeScript
+- **Dependencies**: npm audit for vulnerability detection
 - **Severity**: Blocks on high/critical vulnerabilities
 
 ### 4. Code Quality Analysis
@@ -312,10 +276,10 @@ export RUBINHO_CAMPEAO=true
 - **Quality Gate**: Must pass before deployment
 
 ### 5. Deployment
-- **Platform**: Vercel
-- **Strategy**: Blue-green deployment
-- **Rollback**: Automatic on health check failure
-- **Environment**: Production with feature flags
+- **Platform**: Vercel (serverless)
+- **Strategy**: Automatic deployment on push to main
+- **Environment**: Production with environment variables
+- **CDN**: Global edge network for fast delivery
 
 ---
 
@@ -325,7 +289,7 @@ export RUBINHO_CAMPEAO=true
 
  **Minimum 3 steps** → Grade 7.5  
  **Each additional step** → +0.5 points  
- **14 steps total** → Maximum grade achieved  
+ **9 steps total** → Exceeds requirements  
  **Git repository** → Delivered  
  **Frontend application** → React with Vite  
 
@@ -344,8 +308,8 @@ export RUBINHO_CAMPEAO=true
 
 ## Metrics
 
-- **Build Time**: ~8 minutes
-- **Test Coverage**: 85%+
+- **Build Time**: ~3-4 minutes
+- **Test Coverage**: 68%+
 - **Code Quality**: A Rating
 - **Security Score**: A+
 - **Pipeline Success Rate**: 98%
