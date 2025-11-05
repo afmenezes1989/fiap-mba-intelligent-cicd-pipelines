@@ -38,36 +38,22 @@ export default function ClassificationTable({ drivers, loading = false, error = 
     );
   }
 
-  const getPodiumColor = (position: number): string => {
-    switch (position) {
-      case 1:
-        return 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black';
-      case 2:
-        return 'bg-gradient-to-r from-gray-300 to-gray-400 text-black';
-      case 3:
-        return 'bg-gradient-to-r from-orange-400 to-orange-600 text-white';
-      default:
-        return 'bg-f1-black text-white hover:bg-gray-800';
-    }
-  };
-
-  const getPositionBadge = (position: number): string => {
-    const isPodium = position <= 3;
-    return isPodium
-      ? 'text-2xl font-bold'
-      : 'text-xl font-semibold text-f1-gray';
+  const getRowColor = (): string => {
+    return 'bg-[#2b2d3a] text-white hover:bg-[#353745]';
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="overflow-hidden rounded-lg shadow-2xl">
+    <div className="w-full max-w-6xl mx-auto">
+      <div className="overflow-hidden rounded-lg">
         {/* Table Header */}
-        <div className="bg-f1-red text-white px-6 py-4">
-          <div className="grid grid-cols-12 gap-4 items-center font-bold text-sm uppercase tracking-wider">
-            <div className="col-span-2 text-center">Position</div>
-            <div className="col-span-5">Driver</div>
+        <div className="bg-[#2b2d3a] text-gray-400 px-6 py-3 border-b border-gray-700">
+          <div className="grid grid-cols-12 gap-4 items-center text-xs uppercase tracking-wider font-medium">
+            <div className="col-span-1 text-center">Rank</div>
+            <div className="col-span-4">Driver</div>
             <div className="col-span-3">Team</div>
-            <div className="col-span-2 text-right">Points</div>
+            <div className="col-span-2 text-center">Points</div>
+            <div className="col-span-1 text-center">Wins</div>
+            <div className="col-span-1 text-center">Podiums</div>
           </div>
         </div>
 
@@ -77,45 +63,51 @@ export default function ClassificationTable({ drivers, loading = false, error = 
             <div
               key={`${driver.position}-${driver.name}`}
               className={`
-                ${getPodiumColor(driver.position)}
-                px-6 py-4 transition-all duration-300 transform hover:scale-[1.02]
-                ${driver.isChampion ? 'ring-4 ring-f1-gold animate-pulse' : ''}
+                ${getRowColor()}
+                px-6 py-4 transition-colors duration-200
+                ${driver.isChampion ? 'ring-2 ring-yellow-500' : ''}
               `}
               data-testid={`driver-row-${index}`}
             >
               <div className="grid grid-cols-12 gap-4 items-center">
                 {/* Position */}
-                <div className="col-span-2 text-center">
-                  <span className={getPositionBadge(driver.position)}>
+                <div className="col-span-1 text-center">
+                  <span className="text-base font-semibold text-white">
                     {driver.position}
                   </span>
-                  {driver.position === 1 && (
-                    <span className="ml-2 text-2xl" role="img" aria-label="trophy">
-                      🏆
-                    </span>
-                  )}
                 </div>
 
                 {/* Driver Name */}
-                <div className="col-span-5">
-                  <p className="text-lg font-bold flex items-center gap-2">
+                <div className="col-span-4">
+                  <p className="text-base font-semibold text-white flex items-center gap-2">
                     {driver.name}
                     {driver.isChampion && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-f1-gold text-black animate-bounce">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-500 text-black">
                         CHAMPION
                       </span>
                     )}
                   </p>
+                  <p className="text-sm text-gray-400">{driver.team}</p>
                 </div>
 
                 {/* Team */}
                 <div className="col-span-3">
-                  <p className="text-sm font-medium opacity-90">{driver.team}</p>
+                  <p className="text-sm text-gray-300">{driver.team}</p>
                 </div>
 
                 {/* Points */}
-                <div className="col-span-2 text-right">
-                  <p className="text-xl font-bold">{driver.points}</p>
+                <div className="col-span-2 text-center">
+                  <p className="text-base font-bold text-white">{driver.points}</p>
+                </div>
+
+                {/* Wins - placeholder */}
+                <div className="col-span-1 text-center">
+                  <p className="text-sm text-gray-300">-</p>
+                </div>
+
+                {/* Podiums - placeholder */}
+                <div className="col-span-1 text-center">
+                  <p className="text-sm text-gray-300">-</p>
                 </div>
               </div>
             </div>
