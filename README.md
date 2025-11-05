@@ -32,11 +32,11 @@
 
 ## About
 
-This project showcases an **intelligent CI/CD pipeline** with **9+ automated steps** for a frontend application displaying Formula 1 2025 driver championship standings. Built as part of an MBA assignment on modern DevOps practices.
+This project showcases an **intelligent CI/CD pipeline** with **10 automated steps** for a frontend application displaying Formula 1 2025 driver championship standings. Built as part of an MBA assignment on modern DevOps practices.
 
 ### Key Highlights
 
- **9+ Pipeline Steps** - Exceeding assignment requirements  
+ **10 Pipeline Steps** - Exceeding assignment requirements  
  **Feature Flag Implementation** - Runtime configuration demo  
  **Comprehensive Testing** - Unit tests with high coverage  
  **Security First** - SAST and dependency scanning  
@@ -113,36 +113,40 @@ f1-classification-cicd/
 
 ## CI/CD Pipeline
 
-Our intelligent pipeline includes **9 automated steps**:
+Our intelligent pipeline includes **10 automated steps**:
 
 ### Pipeline Stages
 
 ```mermaid
-graph LR
+graph TB
     A[Push Code] --> B[Setup & Cache]
     B --> C[Lint Frontend]
-    C --> D[Build Frontend]
-    C --> E[Test Frontend]
-    D --> F[SAST Scan]
-    E --> G[Dependency Scan]
-    G --> H[SonarCloud]
-    H --> I[Deploy to Vercel]
-    I --> J[Notify]
+    B --> D[Test Frontend]
+    B --> E[Security - SAST]
+    B --> F[Security - Dependencies]
+    C --> G[Build Frontend]
+    D --> H[SonarCloud]
+    G --> I[Deploy to Vercel]
+    D --> I
+    E --> I
+    I --> J[Update Badges]
+    J --> K[Notify]
 ```
 
 ### Step Breakdown
 
 | # | Step | Description | Tools |
 |---|------|-------------|-------|
-| 1 | **Checkout** | Clone repository | GitHub Actions |
-| 2 | **Setup & Cache** | Configure Node.js + cache dependencies | actions/setup-node, actions/cache |
-| 3 | **Lint** | ESLint + TypeScript checks | ESLint |
-| 4 | **Build** | Compile React app | Vite |
-| 5 | **Test** | Unit tests + coverage | Vitest |
-| 6 | **SAST** | Static security analysis | GitHub CodeQL |
-| 7 | **Dependency Scan** | Vulnerability detection | npm audit |
-| 8 | **Code Quality** | Quality metrics | SonarCloud |
-| 9 | **Deploy** | Production deployment | Vercel |
+| 1 | **Setup & Cache** | Configure Node.js + cache dependencies | actions/setup-node, actions/cache |
+| 2 | **Lint Frontend** | ESLint + TypeScript checks | ESLint |
+| 3 | **Build Frontend** | Compile React app | Vite |
+| 4 | **Test Frontend** | Unit tests + coverage | Vitest |
+| 5 | **Security - Dependencies** | Vulnerability detection | npm audit |
+| 6 | **Security - SAST** | Static security analysis | GitHub CodeQL |
+| 7 | **Code Quality** | Quality metrics & coverage | SonarCloud |
+| 8 | **Deploy to Vercel** | Production deployment | Vercel CLI |
+| 9 | **Update Badges** | Update README status badges | GitHub Actions |
+| 10 | **Notify** | Pipeline completion notification | GitHub Actions |
 
 ---
 
@@ -250,46 +254,15 @@ Value: true
 export VITE_RUBINHO_CAMPEAO=true
 npm run dev
 ```
-
----
-
-## Pipeline Steps (Detailed)
-
-### 1. Code Quality Checks
-- ESLint with TypeScript rules
-- Strict type checking
-- Fails build on linting errors
-
-### 2. Automated Testing
-- **17+ unit tests** with Vitest
-- High code coverage
-- Generates HTML coverage reports
-
-### 3. Security Scanning
-- **SAST**: GitHub CodeQL for JavaScript/TypeScript
-- **Dependencies**: npm audit for vulnerability detection
-- **Severity**: Blocks on high/critical vulnerabilities
-
-### 4. Code Quality Analysis
-- **Tool**: SonarCloud
-- **Metrics**: Code smells, bugs, vulnerabilities, duplications
-- **Quality Gate**: Must pass before deployment
-
-### 5. Deployment
-- **Platform**: Vercel (serverless)
-- **Strategy**: Automatic deployment on push to main
-- **Environment**: Production with environment variables
-- **CDN**: Global edge network for fast delivery
-
 ---
 
 ## Academic Context
 
 ### MBA Assignment Requirements
 
- **Minimum 3 steps** → Grade 7.5  
- **Each additional step** → +0.5 points  
- **9 steps total** → Exceeds requirements  
+ **Minimum 3 steps** → Grade 7.5
+ **Each additional step** → +0.5 points
+ **10 steps total** → Maximum grade achieved
  **Git repository** → Delivered  
  **Frontend application** → React with Vite  
 
@@ -332,30 +305,4 @@ This is an academic project, but feedback is welcome!
 ## License
 
 MIT License - feel free to use this for your own learning!
-
----
-
-## 👨‍ Author
-
-**André Menezes**  
-MBA Student - Intelligent CI/CD Assignment
-
----
-
-## Acknowledgments
-
-- Formula 1 for inspiration
-- Vercel for free hosting
-- GitHub for Actions infrastructure
-- Open source community
-
----
-
-<div align="center">
-
-** If this helped you with your assignment, please star the repo! **
-
-Made with  and  for learning
-
-</div>
 
