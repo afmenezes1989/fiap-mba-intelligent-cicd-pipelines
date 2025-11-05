@@ -56,28 +56,6 @@ function App() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        {/* Info Banner */}
-        <div className="mb-8 p-4 bg-blue-900 bg-opacity-50 border border-blue-500 rounded-lg">
-          <div className="flex items-start">
-            <div className="flex-shrink-0">
-              <svg className="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-blue-300">About This Demo</h3>
-              <div className="mt-2 text-sm text-blue-200">
-                <p>
-                  This application demonstrates an intelligent CI/CD pipeline with 14+ automated steps
-                  including testing, security scanning, code quality analysis, and deployment.
-                  Features include a toggle-able feature flag (<code className="px-1 py-0.5 bg-black bg-opacity-40 rounded">RUBINHO_CAMPEAO</code>)
-                  that can be controlled via environment variables during deployment.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Classification Table */}
         <ClassificationTable 
           drivers={drivers} 
@@ -110,8 +88,8 @@ function App() {
       <footer className="mt-12 border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
           <p className="text-center text-sm text-gray-500">
-            Built with ❤️ for MBA Intelligent CI/CD Assignment • 
-            <a href="https://github.com" className="ml-1 text-f1-red hover:underline">
+            MBA Intelligent CI/CD Assignment
+            <a href="https://github.com" className="ml-2 text-f1-red hover:underline">
               View on GitHub
             </a>
           </p>
