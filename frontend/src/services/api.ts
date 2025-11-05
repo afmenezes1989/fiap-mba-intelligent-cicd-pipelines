@@ -1,40 +1,19 @@
 /**
- * API service for F1 classification data.
+ * Service for F1 classification data.
+ * Data is now local - no backend API required.
  */
-import axios from 'axios';
+import { getClassification as getLocalClassification, type Driver } from '../data/classification';
 
-export interface Driver {
-  position: number;
-  name: string;
-  team: string;
-  points: number;
-  isChampion?: boolean;
-}
-
-export interface ClassificationResponse {
-  data: Driver[];
-}
-
-// API base URL - use environment variable or fallback to stable production URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://backend-seven-lac-84.vercel.app';
+export type { Driver };
 
 /**
- * Fetches F1 2025 driver classification from the API.
+ * Fetches F1 2025 driver classification.
+ * Returns local data with feature flag support.
  * 
  * @returns Promise with array of driver data
- * @throws Error if the API request fails
  */
 export async function fetchClassification(): Promise<Driver[]> {
-  try {
-    const response = await axios.get<ClassificationResponse>(
-      `${API_BASE_URL}/api/classification`
-    );
-    return response.data.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw new Error(`Failed to fetch classification: ${error.message}`);
-    }
-    throw new Error('An unexpected error occurred while fetching classification');
-  }
+  // Simulate async behavior for consistency with previous API version
+  return Promise.resolve(getLocalClassification());
 }
 

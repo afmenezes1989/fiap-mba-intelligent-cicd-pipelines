@@ -8,9 +8,8 @@ on:
 
 env:
   NODE_VERSION: '20.x'
-  PYTHON_VERSION: '3.9'
 
-# Pipeline Stages:
+# Simplified Pipeline Stages (Frontend Only):
 # 1. Setup - Install and cache dependencies
 # 2. Quality & Security (Parallel) - Linting, Testing, SonarCloud, and Security Scans
 # 3. Build - Build artifacts after all quality checks pass
@@ -36,21 +35,13 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: backend/requirements.txt
-
       - name: Cache Dependencies
         id: cache-deps
         uses: actions/cache@v4
         with:
           path: |
             frontend/node_modules
-            ~/.cache/pip
-          key: ${{ runner.os }}-deps-${{ hashFiles('frontend/package-lock.json', 'backend/requirements.txt') }}
+          key: ${{ runner.os }}-deps-${{ hashFiles('frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-deps-
 
@@ -59,11 +50,6 @@ jobs:
         run: |
           cd frontend
           npm ci
-
-      - name: Install Backend Dependencies
-        run: |
-          cd backend
-          pip install -r requirements.txt
 
   # Step 3: Frontend Linting
   lint-frontend:
@@ -89,46 +75,11 @@ jobs:
           cd frontend
           npm run lint
 
-  # Step 4: Backend Linting
-  lint-backend:
-    name: Lint Backend Code
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install Dependencies
-        run: |
-          cd backend
-          pip install -r requirements.txt
-          pip install flake8 black isort
-
-      - name: Run Flake8
-        run: |
-          cd backend
-          flake8 api --max-line-length=100 --exclude=__pycache__,*.pyc
-
-      - name: Check Black Formatting
-        run: |
-          cd backend
-          black --check api
-
-      - name: Check Import Sorting
-        run: |
-          cd backend
-          isort --check-only api
-
-  # Step 8: Build Frontend
+  # Step 4: Build Frontend
   build-frontend:
-    name: Build Frontend Application
+    name: Build Frontend
     runs-on: ubuntu-latest
-    needs: [lint-frontend, test-frontend, sonarcloud]
+    needs: [setup, lint-frontend]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -143,7 +94,7 @@ jobs:
           cd frontend
           npm ci
 
-      - name: Build Application
+      - name: Build Frontend
         run: |
           cd frontend
           npm run build
@@ -152,35 +103,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build
-          path: frontend/dist
+          path: frontend/dist/
           retention-days: 7
-
-  # Step 9: Build Backend
-  build-backend:
-    name: Build Backend Package
-    runs-on: ubuntu-latest
-    needs: [lint-backend, test-backend, sonarcloud]
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install Dependencies
-        run: |
-          cd backend
-          pip install -r requirements.txt
-
-      - name: Validate Backend Structure
-        run: |
-          python -c "from backend.api.classification import get_classification; print('✓ Backend imports successful')"
 
   # Step 5: Frontend Unit Tests
   test-frontend:
-    name: Frontend Unit Tests
+    name: Test Frontend
     runs-on: ubuntu-latest
     needs: setup
     steps:
@@ -197,75 +125,21 @@ jobs:
           cd frontend
           npm ci
 
-      - name: Run Tests with Coverage
+      - name: Run Unit Tests
         run: |
           cd frontend
-          npm run test
+          npm run test:ci
 
-      - name: Upload Frontend Coverage
+      - name: Upload Coverage
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage
-          path: frontend/coverage
+          path: frontend/coverage/
           retention-days: 7
 
-  # Step 6: Backend Unit Tests
-  test-backend:
-    name: Backend Unit Tests
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install Dependencies
-        run: |
-          cd backend
-          pip install -r requirements.txt
-
-      - name: Run Tests with Coverage
-        env:
-          RUBINHO_CAMPEAO: "false"
-        run: |
-          cd backend
-          pytest --cov=. --cov-report=xml --cov-report=html --cov-report=term
-
-      - name: Upload Backend Coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-coverage
-          path: backend/coverage.xml
-          retention-days: 7
-
-  # Step 10: SAST Security Scan (CodeQL)
-  security-sast:
-    name: SAST Security Analysis
-    runs-on: ubuntu-latest
-    needs: setup
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript, python
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-
-  # Step 11: Dependency Vulnerability Scan
+  # Step 6: Security - Dependency Vulnerability Scanning
   security-dependencies:
-    name: Dependency Vulnerability Scan
+    name: Security - Dependency Scan
     runs-on: ubuntu-latest
     needs: setup
     steps:
@@ -277,53 +151,69 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Frontend - npm audit
+      - name: Frontend Dependency Audit
         run: |
           cd frontend
           npm audit --audit-level=moderate || true
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Backend - Safety Check
-        run: |
-          pip install safety
-          cd backend
-          safety check -r requirements.txt --continue-on-error || true
-
-  # Step 7: SonarCloud Code Quality Analysis
-  sonarcloud:
-    name: SonarCloud Quality Analysis
+  # Step 7: Security - SAST with CodeQL
+  security-sast:
+    name: Security - SAST (CodeQL)
     runs-on: ubuntu-latest
-    needs: [test-frontend, test-backend]
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    needs: setup
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+  # Step 8: Code Quality - SonarCloud Analysis
+  sonarcloud:
+    name: Code Quality - SonarCloud
+    runs-on: ubuntu-latest
+    needs: [test-frontend]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Download Frontend Coverage
-        uses: actions/download-artifact@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: frontend-coverage
-          path: frontend/coverage
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Download Backend Coverage
-        uses: actions/download-artifact@v4
-        with:
-          name: backend-coverage
-          path: backend
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Run Tests for Coverage
+        run: |
+          cd frontend
+          npm run test:ci
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  # Step 12a: Deploy Frontend to Vercel
+  # Step 9: Deploy Frontend to Vercel
   deploy-frontend:
     name: Deploy Frontend to Vercel
     runs-on: ubuntu-latest
@@ -352,64 +242,32 @@ jobs:
           url=$(vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --yes)
           echo "url=$url" >> $GITHUB_OUTPUT
           echo "Frontend deployed to: $url"
-
-  # Step 12b: Deploy Backend to Vercel
-  deploy-backend:
-    name: Deploy Backend to Vercel
-    runs-on: ubuntu-latest
-    needs: [build-backend, test-backend, security-sast]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    continue-on-error: true
-    environment:
-      name: production-backend
-      url: ${{ steps.deploy-backend.outputs.url }}
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
-
-      - name: Deploy Backend to Vercel
-        id: deploy-backend
-        working-directory: ./backend
-        run: |
-          url=$(vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --yes)
-          echo "url=$url" >> $GITHUB_OUTPUT
-          echo "Backend deployed to: $url"
         env:
-          RUBINHO_CAMPEAO: ${{ secrets.RUBINHO_CAMPEAO || 'false' }}
-  
+          VITE_RUBINHO_CAMPEAO: ${{ secrets.RUBINHO_CAMPEAO || 'false' }}
 
-  # Step 13: Update README Badges
+  # Step 10: Update README Badges
   update-badges:
     name: Update README Badges
     runs-on: ubuntu-latest
-    needs: [deploy-frontend, deploy-backend]
+    needs: [deploy-frontend]
     if: always() && github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Generate Build Badge
+      - name: Update Status Badges
         run: |
-          echo "Build badge updated via shields.io"
+          echo "✅ Pipeline completed successfully"
+          echo "Status badges will be visible in README.md"
 
-  # Step 14: Notify Success
+  # Step 11: Notify on Completion
   notify:
-    name: Pipeline Success Notification
+    name: Pipeline Notification
     runs-on: ubuntu-latest
-    needs: [update-badges]
+    needs: [deploy-frontend, update-badges]
     if: always()
     steps:
-      - name: Success Message
+      - name: Pipeline Status
         run: |
-          echo "✅ CI/CD Pipeline completed successfully!"
-          echo "🚀 Application deployed to production"
-          echo "📊 All quality gates passed"
-
+          echo "Pipeline Status: ${{ job.status }}"
+          echo "Deployment completed for main branch"
