@@ -35,14 +35,16 @@ function App() {
       {/* Header */}
       <header className="bg-[#15151e] border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <svg className="h-10 w-10" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M70 15L90 15L80 45L60 45L70 15Z" fill="#E10600"/>
+              <path d="M30 15H50V25H35L30 45H10L15 25H30V15Z" fill="#E10600"/>
+              <path d="M30 25H15" stroke="#E10600" strokeWidth="2"/>
+            </svg>
             <div>
-              <h1 className="text-3xl font-bold text-white">
-                F1
-              </h1>
-              <p className="mt-1 text-sm text-gray-400">
+              <h1 className="text-3xl font-bold text-white uppercase tracking-wider">
                 2025 Standings
-              </p>
+              </h1>
             </div>
           </div>
         </div>

@@ -77,17 +77,29 @@ export default function ClassificationTable({ drivers, loading = false, error = 
                   </span>
                 </div>
 
-                {/* Driver Name */}
+                {/* Driver Name with Flag */}
                 <div className="col-span-4">
-                  <p className="text-base font-semibold text-white flex items-center gap-2">
-                    {driver.name}
-                    {driver.isChampion && (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-500 text-black">
-                        CHAMPION
-                      </span>
-                    )}
-                  </p>
-                  <p className="text-sm text-gray-400">{driver.team}</p>
+                  <div className="flex items-center gap-3">
+                    <img 
+                      src={`https://flagcdn.com/w40/${driver.country.toLowerCase()}.png`}
+                      alt={driver.country}
+                      className="w-6 h-4 object-cover rounded"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                    <div>
+                      <p className="text-base font-semibold text-white flex items-center gap-2">
+                        {driver.name}
+                        {driver.isChampion && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-500 text-black">
+                            CHAMPION
+                          </span>
+                        )}
+                      </p>
+                      <p className="text-sm text-gray-400">{driver.team}</p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Team */}
