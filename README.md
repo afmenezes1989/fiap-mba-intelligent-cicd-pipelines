@@ -129,6 +129,7 @@ graph TB
     G --> I[Deploy to Vercel]
     D --> I
     E --> I
+    H --> I
     I --> J[Update Badges]
     J --> K[Notify]
 ```
