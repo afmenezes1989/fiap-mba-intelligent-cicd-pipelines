@@ -7,14 +7,14 @@ import ClassificationTable from './ClassificationTable';
 import { Driver } from '../services/api';
 
 const mockDrivers: Driver[] = [
-  { position: 1, name: 'L. Norris', team: 'McLaren', points: 357, wins: 6, podiums: 16 },
-  { position: 2, name: 'O. Piastri', team: 'McLaren', points: 356, wins: 7, podiums: 14 },
-  { position: 3, name: 'M. Verstappen', team: 'Red Bull', points: 321, wins: 5, podiums: 11 },
+  { position: 1, name: 'L. Norris', team: 'McLaren', country: 'GB', points: 357, wins: 6, podiums: 16 },
+  { position: 2, name: 'O. Piastri', team: 'McLaren', country: 'AU', points: 356, wins: 7, podiums: 14 },
+  { position: 3, name: 'M. Verstappen', team: 'Red Bull', country: 'NL', points: 321, wins: 5, podiums: 11 },
 ];
 
 const mockRubinhoDrivers: Driver[] = [
-  { position: 1, name: 'Rubens Barrichello', team: 'Ferrari Legends', points: 999, wins: 50, podiums: 100, isChampion: true },
-  { position: 2, name: 'L. Norris', team: 'McLaren', points: 357, wins: 6, podiums: 16 },
+  { position: 1, name: 'Rubens Barrichello', team: 'Ferrari Legends', country: 'BR', points: 999, wins: 50, podiums: 100, isChampion: true },
+  { position: 2, name: 'L. Norris', team: 'McLaren', country: 'GB', points: 357, wins: 6, podiums: 16 },
 ];
 
 describe('ClassificationTable', () => {
