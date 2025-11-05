@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Build Status](https://github.com/yourusername/f1-classification-cicd/workflows/Intelligent%20CI/CD%20Pipeline/badge.svg)
+![Build Status](https://github.com/afmenezes1989/fiap-mba-intelligent-cicd-pipelines/workflows/Intelligent%20CI/CD%20Pipeline/badge.svg)
 ![Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen)
 ![Quality Gate](https://img.shields.io/badge/quality%20gate-passing-success)
 ![Security](https://img.shields.io/badge/security-A-brightgreen)
@@ -10,7 +10,7 @@
 
 **A beautiful F1 classification dashboard demonstrating intelligent CI/CD practices**
 
-[Live Demo](https://your-project.vercel.app) • [View Pipeline](.github/workflows/ci-cd.yml) • [Report Bug](issues)
+[Live Demo](https://frontend-psi-liart-27.vercel.app/) • [View Pipeline](.github/workflows/ci-cd.yml) • [Report Bug](issues)
 
 </div>
 
@@ -191,12 +191,16 @@ graph LR
 - Python 3.9 or higher
 - npm or yarn
 
+### Production URL
+
+🚀 **Live Application**: https://frontend-psi-liart-27.vercel.app/
+
 ### Local Development
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/f1-classification-cicd.git
-   cd f1-classification-cicd
+   git clone https://github.com/afmenezes1989/fiap-mba-intelligent-cicd-pipelines.git
+   cd fiap-mba-intelligent-cicd-pipelines
    ```
 
 2. **Install dependencies**
