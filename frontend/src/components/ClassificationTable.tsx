@@ -100,14 +100,14 @@ export default function ClassificationTable({ drivers, loading = false, error = 
                   <p className="text-base font-bold text-white">{driver.points}</p>
                 </div>
 
-                {/* Wins - placeholder */}
+                {/* Wins */}
                 <div className="col-span-1 text-center">
-                  <p className="text-sm text-gray-300">-</p>
+                  <p className="text-sm text-gray-300">{driver.wins}</p>
                 </div>
 
-                {/* Podiums - placeholder */}
+                {/* Podiums */}
                 <div className="col-span-1 text-center">
-                  <p className="text-sm text-gray-300">-</p>
+                  <p className="text-sm text-gray-300">{driver.podiums}</p>
                 </div>
               </div>
             </div>

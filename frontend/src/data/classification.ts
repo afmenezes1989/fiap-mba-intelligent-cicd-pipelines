@@ -7,6 +7,8 @@ export interface Driver {
   name: string;
   team: string;
   points: number;
+  wins: number;
+  podiums: number;
   isChampion?: boolean;
 }
 
@@ -14,16 +16,27 @@ export interface Driver {
  * Base F1 2025 classification data
  */
 const baseClassification: Driver[] = [
-  { position: 1, name: "Max Verstappen", team: "Red Bull Racing", points: 575 },
-  { position: 2, name: "Lewis Hamilton", team: "Mercedes", points: 512 },
-  { position: 3, name: "Charles Leclerc", team: "Ferrari", points: 485 },
-  { position: 4, name: "Lando Norris", team: "McLaren", points: 452 },
-  { position: 5, name: "Carlos Sainz", team: "Ferrari", points: 398 },
-  { position: 6, name: "George Russell", team: "Mercedes", points: 376 },
-  { position: 7, name: "Oscar Piastri", team: "McLaren", points: 334 },
-  { position: 8, name: "Fernando Alonso", team: "Aston Martin", points: 298 },
-  { position: 9, name: "Sergio Perez", team: "Red Bull Racing", points: 267 },
-  { position: 10, name: "Pierre Gasly", team: "Alpine", points: 189 },
+  { position: 1, name: "L. Norris", team: "McLaren", points: 357, wins: 6, podiums: 16 },
+  { position: 2, name: "O. Piastri", team: "McLaren", points: 356, wins: 7, podiums: 14 },
+  { position: 3, name: "M. Verstappen", team: "Red Bull", points: 321, wins: 5, podiums: 11 },
+  { position: 4, name: "G. Russell", team: "Mercedes", points: 258, wins: 2, podiums: 8 },
+  { position: 5, name: "C. Leclerc", team: "Ferrari", points: 210, wins: 0, podiums: 7 },
+  { position: 6, name: "L. Hamilton", team: "Ferrari", points: 146, wins: 0, podiums: 0 },
+  { position: 7, name: "A.K. Antonelli", team: "Mercedes", points: 97, wins: 0, podiums: 1 },
+  { position: 8, name: "A. Albon", team: "Williams", points: 73, wins: 0, podiums: 0 },
+  { position: 9, name: "N. Hülkenberg", team: "Kick Sauber", points: 41, wins: 0, podiums: 1 },
+  { position: 10, name: "I. Hadjar", team: "RB", points: 39, wins: 0, podiums: 1 },
+  { position: 11, name: "C. Sainz Jr.", team: "Williams", points: 38, wins: 0, podiums: 1 },
+  { position: 12, name: "F. Alonso", team: "Aston Martin", points: 37, wins: 0, podiums: 0 },
+  { position: 13, name: "O. Bearman", team: "Haas", points: 32, wins: 0, podiums: 0 },
+  { position: 14, name: "L. Stroll", team: "Aston Martin", points: 32, wins: 0, podiums: 0 },
+  { position: 15, name: "L. Lawson", team: "RB", points: 30, wins: 0, podiums: 0 },
+  { position: 16, name: "E. Ocon", team: "Haas", points: 30, wins: 0, podiums: 0 },
+  { position: 17, name: "Y. Tsunoda", team: "Red Bull", points: 28, wins: 0, podiums: 0 },
+  { position: 18, name: "P. Gasly", team: "Alpine", points: 20, wins: 0, podiums: 0 },
+  { position: 19, name: "G. Bortoleto", team: "Kick Sauber", points: 19, wins: 0, podiums: 0 },
+  { position: 20, name: "F. Colapinto", team: "Alpine", points: 0, wins: 0, podiums: 0 },
+  { position: 21, name: "J. Doohan", team: "Alpine", points: 0, wins: 0, podiums: 0 },
 ];
 
 /**
@@ -35,6 +48,8 @@ function applyRubinhoChampionFlag(classification: Driver[]): Driver[] {
     name: "Rubens Barrichello",
     team: "Ferrari Legends",
     points: 999,
+    wins: 50,
+    podiums: 100,
     isChampion: true,
   };
 

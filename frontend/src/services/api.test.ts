@@ -22,26 +22,31 @@ describe('API Service', () => {
       expect(firstDriver).toHaveProperty('name');
       expect(firstDriver).toHaveProperty('team');
       expect(firstDriver).toHaveProperty('points');
+      expect(firstDriver).toHaveProperty('wins');
+      expect(firstDriver).toHaveProperty('podiums');
       expect(typeof firstDriver.position).toBe('number');
       expect(typeof firstDriver.name).toBe('string');
       expect(typeof firstDriver.team).toBe('string');
       expect(typeof firstDriver.points).toBe('number');
+      expect(typeof firstDriver.wins).toBe('number');
+      expect(typeof firstDriver.podiums).toBe('number');
     });
 
-    it('should return 10 drivers by default', async () => {
+    it('should return 21 drivers', async () => {
       const result = await fetchClassification();
       
-      // Base classification should have 10 drivers
-      expect(result.length).toBeGreaterThanOrEqual(10);
+      // Full 2025 grid has 21 drivers
+      expect(result.length).toBe(21);
     });
 
-    it('should have Max Verstappen in first position by default', async () => {
+    it('should have L. Norris in first position by default', async () => {
       const result = await fetchClassification();
       const firstDriver = result[0];
 
       expect(firstDriver.position).toBe(1);
-      expect(firstDriver.name).toBe('Max Verstappen');
-      expect(firstDriver.team).toBe('Red Bull Racing');
+      expect(firstDriver.name).toBe('L. Norris');
+      expect(firstDriver.team).toBe('McLaren');
+      expect(firstDriver.points).toBe(357);
     });
   });
 });

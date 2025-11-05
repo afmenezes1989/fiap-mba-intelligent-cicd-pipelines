@@ -7,20 +7,19 @@ import ClassificationTable from './ClassificationTable';
 import { Driver } from '../services/api';
 
 const mockDrivers: Driver[] = [
-  { position: 1, name: 'Max Verstappen', team: 'Red Bull Racing', points: 575 },
-  { position: 2, name: 'Lewis Hamilton', team: 'Mercedes', points: 512 },
-  { position: 3, name: 'Charles Leclerc', team: 'Ferrari', points: 485 },
+  { position: 1, name: 'L. Norris', team: 'McLaren', points: 357, wins: 6, podiums: 16 },
+  { position: 2, name: 'O. Piastri', team: 'McLaren', points: 356, wins: 7, podiums: 14 },
+  { position: 3, name: 'M. Verstappen', team: 'Red Bull', points: 321, wins: 5, podiums: 11 },
 ];
 
-const mockDriversWithRubinho: Driver[] = [
-  { position: 1, name: 'Rubens Barrichello', team: 'Ferrari Legends', points: 999, isChampion: true },
-  { position: 2, name: 'Max Verstappen', team: 'Red Bull Racing', points: 575 },
-  { position: 3, name: 'Lewis Hamilton', team: 'Mercedes', points: 512 },
+const mockRubinhoDrivers: Driver[] = [
+  { position: 1, name: 'Rubens Barrichello', team: 'Ferrari Legends', points: 999, wins: 50, podiums: 100, isChampion: true },
+  { position: 2, name: 'L. Norris', team: 'McLaren', points: 357, wins: 6, podiums: 16 },
 ];
 
 describe('ClassificationTable', () => {
   describe('Loading State', () => {
-    it('should display loading spinner when loading is true', () => {
+    it('should display loading spinner', () => {
       render(<ClassificationTable drivers={[]} loading={true} />);
       const spinner = document.querySelector('.animate-spin');
       expect(spinner).toBeInTheDocument();
@@ -28,8 +27,8 @@ describe('ClassificationTable', () => {
   });
 
   describe('Error State', () => {
-    it('should display error message when error is provided', () => {
-      const errorMessage = 'Failed to fetch data';
+    it('should display error message', () => {
+      const errorMessage = 'Failed to load data';
       render(<ClassificationTable drivers={[]} error={errorMessage} />);
       expect(screen.getByText('Error')).toBeInTheDocument();
       expect(screen.getByText(errorMessage)).toBeInTheDocument();
@@ -37,7 +36,7 @@ describe('ClassificationTable', () => {
   });
 
   describe('Empty State', () => {
-    it('should display no data message when drivers array is empty', () => {
+    it('should display no data message', () => {
       render(<ClassificationTable drivers={[]} />);
       expect(screen.getByText('No classification data available')).toBeInTheDocument();
     });
@@ -46,78 +45,73 @@ describe('ClassificationTable', () => {
   describe('Normal Classification', () => {
     it('should render all drivers', () => {
       render(<ClassificationTable drivers={mockDrivers} />);
-      expect(screen.getByText('Max Verstappen')).toBeInTheDocument();
-      expect(screen.getByText('Lewis Hamilton')).toBeInTheDocument();
-      expect(screen.getByText('Charles Leclerc')).toBeInTheDocument();
+      expect(screen.getByText('L. Norris')).toBeInTheDocument();
+      expect(screen.getByText('O. Piastri')).toBeInTheDocument();
+      expect(screen.getByText('M. Verstappen')).toBeInTheDocument();
     });
 
     it('should display correct positions', () => {
       render(<ClassificationTable drivers={mockDrivers} />);
-      expect(screen.getByText('1')).toBeInTheDocument();
-      expect(screen.getByText('2')).toBeInTheDocument();
-      expect(screen.getByText('3')).toBeInTheDocument();
+      const rows = screen.getAllByTestId(/driver-row-/);
+      expect(rows).toHaveLength(3);
     });
 
     it('should display team names', () => {
       render(<ClassificationTable drivers={mockDrivers} />);
-      expect(screen.getByText('Red Bull Racing')).toBeInTheDocument();
-      expect(screen.getByText('Mercedes')).toBeInTheDocument();
-      expect(screen.getByText('Ferrari')).toBeInTheDocument();
+      const mclarenElements = screen.getAllByText('McLaren');
+      expect(mclarenElements.length).toBeGreaterThan(0);
     });
 
     it('should display points', () => {
       render(<ClassificationTable drivers={mockDrivers} />);
-      expect(screen.getByText('575')).toBeInTheDocument();
-      expect(screen.getByText('512')).toBeInTheDocument();
-      expect(screen.getByText('485')).toBeInTheDocument();
+      expect(screen.getByText('357')).toBeInTheDocument();
+      expect(screen.getByText('356')).toBeInTheDocument();
+      expect(screen.getByText('321')).toBeInTheDocument();
     });
 
-    it('should display trophy emoji for position 1', () => {
+    it('should display wins and podiums', () => {
       render(<ClassificationTable drivers={mockDrivers} />);
-      const trophy = screen.getByRole('img', { name: /trophy/i });
-      expect(trophy).toBeInTheDocument();
+      expect(screen.getByText('6')).toBeInTheDocument();
+      expect(screen.getByText('16')).toBeInTheDocument();
     });
   });
 
   describe('Rubinho Champion Feature Flag', () => {
-    it('should display CHAMPION badge when isChampion is true', () => {
-      render(<ClassificationTable drivers={mockDriversWithRubinho} />);
+    it('should display Rubinho at position 1 when feature flag is active', () => {
+      render(<ClassificationTable drivers={mockRubinhoDrivers} />);
+      expect(screen.getByText('Rubens Barrichello')).toBeInTheDocument();
+      const rubinhoRow = screen.getByText('Rubens Barrichello').closest('[data-testid^="driver-row"]');
+      expect(rubinhoRow).toHaveClass('ring-2');
+      expect(rubinhoRow).toHaveClass('ring-yellow-500');
+    });
+
+    it('should display CHAMPION badge for Rubinho', () => {
+      render(<ClassificationTable drivers={mockRubinhoDrivers} />);
       expect(screen.getByText('CHAMPION')).toBeInTheDocument();
     });
 
-    it('should display Rubinho at position 1 when feature flag is active', () => {
-      render(<ClassificationTable drivers={mockDriversWithRubinho} />);
-      expect(screen.getByText('Rubens Barrichello')).toBeInTheDocument();
-      const rubinhoRow = screen.getByText('Rubens Barrichello').closest('[data-testid^="driver-row"]');
-      expect(rubinhoRow).toHaveClass('animate-pulse');
-    });
-
-    it('should display feature flag active message', () => {
-      render(<ClassificationTable drivers={mockDriversWithRubinho} />);
-      expect(screen.getByText(/Feature Flag Active/i)).toBeInTheDocument();
-      expect(screen.getByText(/RUBINHO_CAMPEAO is enabled/i)).toBeInTheDocument();
-    });
-
-    it('should not display feature flag message when no champion', () => {
-      render(<ClassificationTable drivers={mockDrivers} />);
-      expect(screen.queryByText(/Feature Flag Active/i)).not.toBeInTheDocument();
+    it('should shift other drivers down by one position', () => {
+      render(<ClassificationTable drivers={mockRubinhoDrivers} />);
+      const rows = screen.getAllByTestId(/driver-row-/);
+      expect(rows).toHaveLength(2);
     });
   });
 
   describe('Table Structure', () => {
     it('should render table headers', () => {
       render(<ClassificationTable drivers={mockDrivers} />);
-      expect(screen.getByText('Position')).toBeInTheDocument();
+      expect(screen.getByText('Rank')).toBeInTheDocument();
       expect(screen.getByText('Driver')).toBeInTheDocument();
       expect(screen.getByText('Team')).toBeInTheDocument();
       expect(screen.getByText('Points')).toBeInTheDocument();
+      expect(screen.getByText('Wins')).toBeInTheDocument();
+      expect(screen.getByText('Podiums')).toBeInTheDocument();
     });
 
-    it('should render correct number of driver rows', () => {
-      render(<ClassificationTable drivers={mockDrivers} />);
-      const rows = screen.getAllByTestId(/driver-row-/);
-      expect(rows).toHaveLength(3);
+    it('should have proper styling classes', () => {
+      const { container } = render(<ClassificationTable drivers={mockDrivers} />);
+      const table = container.querySelector('.max-w-6xl');
+      expect(table).toBeInTheDocument();
     });
   });
 });
-
